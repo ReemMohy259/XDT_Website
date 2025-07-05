@@ -128,7 +128,7 @@
       overflow: hidden;
     }
 
-    .hero iframe {
+    .hero video {
       position: absolute;
       top: 0;
       left: 0;
@@ -136,7 +136,6 @@
       height: 100%;
       object-fit: cover;
       opacity: 0.3;
-      border: none;
     }
 
     .hero-content {
@@ -595,7 +594,7 @@
 
   <!-- Hero section -->
   <section class="hero">
-    <src="assets/CarIntro.mp4" frameborder="0" allowfullscreen>
+    <video src="assets/CarIntro.mp4" autoplay muted loop playsinline></video>
     <div class="hero-content">
       <h1>XDT – UDS Tester Tool</h1>
       <p>One Tool, All ECUs — Scalable automotive diagnostics</p>
@@ -773,11 +772,13 @@
               </div>
               <h6>Java/JavaFX</h6>
             </div>
-            <div class="tech-item">
-              <div class="tech-icon" style="background: linear-gradient(135deg, #00d4ff 0%, #0066cc 100%);">
-                <i class="fas fa-network-wired"></i>
+            <div class="col-12">
+              <div class="tech-item">
+                <div class="tech-icon" style="background: linear-gradient(135deg, #00d4ff 0%, #0066cc 100%);">
+                  <i class="fas fa-network-wired"></i>
+                </div>
+                <h6>ISO 14229-1/2</h6>
               </div>
-              <h6>ISO 14229-1/2</h6>
             </div>
             <div class="tech-item">
               <div class="tech-icon" style="background: linear-gradient(135deg, #00d4ff 0%, #0066cc 100%);">

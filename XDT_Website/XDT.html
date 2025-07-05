@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XDT – UDS Tester Tool</title>
+  <link rel="icon" href="https://drive.google.com/uc?export=download&id=1KyNRMh1mL_JoLxwCQHukYVjqsufVHfqv" type="image/png" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    /* Modern CSS Variables for theming */
+    :root {
+      --primary-gradient: linear-gradient(135deg, #00d4ff 0%, #0066cc 100%);
+      --secondary-gradient: linear-gradient(135deg, #00ffcc 0%, #009966 100%);
+      --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --dark-bg: #0a0a0a;
+      --glass-bg: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.2);
+      --text-light: #ffffff;
+      --text-dark: #1a1a1a;
+      --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.1);
+      --shadow-strong: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--dark-bg);
+      color: var(--text-light);
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    /* Animated background */
+    .animated-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: linear-gradient(45deg, #0a0a0a, #1a1a2e, #16213e);
+      animation: gradientShift 10s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background: linear-gradient(45deg, #0a0a0a, #1a1a2e, #16213e); }
+      50% { background: linear-gradient(45deg, #16213e, #0a0a0a, #1a1a2e); }
+    }
+
+    /* Floating particles */
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    /* Glassmorphism navbar */
+    .navbar {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      transition: all 0.3s ease;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .navbar.scrolled {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(30px);
+    }
+
+    .navbar-brand img {
+      height: 50px;
+      filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.8)) brightness(1.2) contrast(1.3);
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .navbar-brand img:hover {
+      transform: scale(1.15) rotateY(15deg) rotateX(5deg);
+      filter: drop-shadow(0 0 40px rgba(0, 242, 254, 1)) brightness(1.6) contrast(1.8);
+    }
+
+    .nav-link {
+      color: var(--text-light) !important;
+      font-weight: 500;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent-gradient);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* Hero section with modern design */
+    .hero {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.3;
+      border: none;
+    }
+
+    .hero-content {
+      text-align: center;
+      z-index: 2;
+      max-width: 800px;
+      padding: 0 20px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 1rem;
+      animation: slideUp 1s ease-out;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+      animation: slideUp 1s ease-out 0.2s both;
+    }
+
+    .cta-button {
+      background: var(--accent-gradient);
+      border: none;
+      padding: 15px 40px;
+      border-radius: 50px;
+      color: white;
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-soft);
+      animation: slideUp 1s ease-out 0.4s both;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-strong);
+      color: white;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Modern sections */
+    section {
+      padding: 100px 0;
+      position: relative;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 3rem;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Glassmorphism cards */
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 2rem;
+      transition: all 0.3s ease;
+      height: 100%;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 30px 60px rgba(102, 126, 234, 0.3);
+      border-color: rgba(102, 126, 234, 0.5);
+    }
+
+    .feature-icon {
+      width: 80px;
+      height: 80px;
+      background: var(--accent-gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 2rem;
+      color: white;
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .glass-card:hover .feature-icon {
+      transform: scale(1.15) rotateY(15deg) rotateX(5deg);
+      box-shadow: 0 15px 30px rgba(79, 172, 254, 0.4);
+    }
+
+    .feature-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-light);
+    }
+
+    .feature-description {
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.6;
+    }
+
+    /* Stats section */
+    .stats-section {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--glass-border);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 700;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    /* Process section */
+    .process-step {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .process-step::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg, transparent, rgba(79, 172, 254, 0.1), transparent);
+      animation: rotate 4s linear infinite;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .process-step:hover::before {
+      opacity: 1;
+    }
+
+    .process-step:hover {
+      transform: translateY(-5px);
+      border-color: rgba(79, 172, 254, 0.5);
+    }
+
+    .process-number {
+      width: 60px;
+      height: 60px;
+      background: var(--primary-gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .process-step:hover .process-number {
+      transform: scale(1.15) rotateY(15deg) rotateX(5deg);
+    }
+
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Technologies section */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .tech-item {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 15px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .tech-item:hover {
+      transform: translateY(-5px);
+      border-color: #00d4ff;
+      box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+    }
+
+    .tech-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #00d4ff 0%, #0066cc 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.5rem;
+      color: white;
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .tech-item:hover .tech-icon {
+      transform: scale(1.15) rotateY(15deg) rotateX(5deg);
+    }
+
+    /* Benefits section */
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .benefit-item {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 2rem;
+      transition: all 0.3s ease;
+    }
+
+    .benefit-item:hover {
+      transform: translateY(-5px);
+      border-color: rgba(79, 172, 254, 0.5);
+      box-shadow: 0 15px 40px rgba(79, 172, 254, 0.2);
+    }
+
+    .benefit-icon {
+      width: 70px;
+      height: 70px;
+      background: var(--accent-gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+      color: white;
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .benefit-item:hover .benefit-icon {
+      transform: scale(1.15) rotateY(15deg) rotateX(5deg);
+    }
+
+    /* Testimonials section */
+    .testimonial-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      margin-bottom: 2rem;
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(0, 255, 204, 0.5);
+      box-shadow: 0 15px 40px rgba(0, 255, 204, 0.2);
+    }
+
+    .testimonial-avatar {
+      width: 80px;
+      height: 80px;
+      background: var(--secondary-gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 2rem;
+      color: white;
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .testimonial-card:hover .testimonial-avatar {
+      transform: scale(1.15) rotateY(15deg) rotateX(5deg);
+    }
+
+    .team-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 15px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      margin-bottom: 1rem;
+    }
+
+    .team-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 255, 128, 0.2);
+      border-color: rgba(0, 255, 128, 0.3);
+    }
+
+    .team-name {
+      font-weight: 600;
+      color: var(--text-light);
+      margin-bottom: 0.5rem;
+    }
+
+    .mentor-section {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      margin-top: 3rem;
+    }
+
+    /* Footer */
+    footer {
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(30px);
+      padding: 60px 0 30px;
+      border-top: 1px solid var(--glass-border);
+    }
+
+    .footer-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      background: var(--secondary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .footer-email {
+      color: #4facfe;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .footer-email:hover {
+      color: #00f2fe;
+      text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+    }
+
+    /* Scroll animations */
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease;
+    }
+
+    .animate-on-scroll.animated {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2rem;
+        white-space: normal;
+      }
+      
+      .section-title {
+        font-size: 2rem;
+      }
+      
+      .glass-card {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated background -->
+  <div class="animated-bg"></div>
+
+  <!-- Floating particles -->
+  <div class="particle" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
+  <div class="particle" style="top: 50%; left: 80%; animation-delay: 1s;"></div>
+  <div class="particle" style="top: 80%; left: 30%; animation-delay: 2s;"></div>
+  <div class="particle" style="top: 30%; left: 70%; animation-delay: 3s;"></div>
+  <div class="particle" style="top: 70%; left: 20%; animation-delay: 4s;"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <img src="https://drive.google.com/uc?export=download&id=1KyNRMh1mL_JoLxwCQHukYVjqsufVHfqv" alt="XDT Logo" />
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+          <li class="nav-item"><a class="nav-link" href="#benefits">Benefits</a></li>
+          <li class="nav-item"><a class="nav-link" href="#process">Process</a></li>
+          <li class="nav-item"><a class="nav-link" href="#team">Team</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero section -->
+  <section class="hero">
+    <iframe src="https://www.youtube.com/embed/TYTUoGHvB58?si=2TBi8_QnKuQ5P4B0&autoplay=1&mute=1&loop=1&playlist=TYTUoGHvB58" frameborder="0" allowfullscreen></iframe>
+    <div class="hero-content">
+      <h1>XDT – UDS Tester Tool</h1>
+      <p>One Tool, All ECUs — Scalable automotive diagnostics</p>
+      <a href="#features" class="cta-button">
+        <i class="fas fa-rocket me-2"></i>Explore Features
+      </a>
+    </div>
+  </section>
+
+  <!-- About section -->
+  <section id="about" class="animate-on-scroll">
+    <div class="container">
+      <h2 class="section-title">About XDT</h2>
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="glass-card">
+            <p class="lead text-center mb-4">
+              XDT (Universal Diagnostic Tool) is built in Java/JavaFX to provide a sleek interface for ECU diagnostics & software flashing. Modular and standards‑based on UDS standard, scalable and vendor‑independent.
+            </p>
+            <p class="text-center">
+              Our tool bridges the gap between complex automotive diagnostics and user-friendly interfaces, making ECU management accessible to professionals across the automotive industry.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats section -->
+  <section class="stats-section animate-on-scroll">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="stat-card">
+            <div class="stat-number">15+</div>
+            <div class="stat-label">Supported CAN Interfaces </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-card">
+            <div class="stat-number">99.9%</div>
+            <div class="stat-label">Reliability Rate</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-card">
+            <div class="stat-number">2min</div>
+            <div class="stat-label">Average Setup Time</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-card">
+            <div class="stat-number">24/7</div>
+            <div class="stat-label">AI Copilot Support</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+   <!-- Features section -->
+  <section id="features" class="animate-on-scroll">
+    <div class="container">
+      <h2 class="section-title">Core Features</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="feature-icon">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <h5 class="feature-title">Quick Set-Up</h5>
+            <p class="feature-description">
+              Jumpstart diagnostics with easy configuration and intuitive setup process. Get connected to any ECU within minutes.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="feature-icon">
+              <i class="fas fa-desktop"></i>
+            </div>
+            <h5 class="feature-title">Intuitive GUI</h5>
+            <p class="feature-description">
+              Smooth UX for ECU diagnostics and flashing with modern interface design. Built with Java/JavaFX for cross-platform compatibility.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="feature-icon">
+              <i class="fas fa-brain"></i>
+            </div>
+            <h5 class="feature-title">AI Copilot</h5>
+            <p class="feature-description">
+              Smart assistance for executing UDS services accurately with intelligent recommendations and real-time guidance.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="feature-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h5 class="feature-title">Real-time Configuration</h5>
+            <p class="feature-description">
+              Experience seamless real-time adjustments for vendor-independent and flexible diagnostics across all vehicle ECUs.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="feature-icon">
+              <i class="fas fa-puzzle-piece"></i>
+            </div>
+            <h5 class="feature-title">Scalable Architecture</h5>
+            <p class="feature-description">
+              Extensible design allows for easy adding new features and support different diagnostic protocols as needed.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="feature-icon">
+              <i class="fas fa-upload"></i>
+            </div>
+            <h5 class="feature-title">Software Transfer</h5>
+            <p class="feature-description">
+              Efficiently upload and download software to ECUs with high-speed data transfer, ensuring quick and reliable firmware updates.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="feature-icon">
+              <i class="fas fa-vial"></i>
+            </div>
+            <h5 class="feature-title">Test and Sequence Execution</h5>
+            <p class="feature-description">
+              Automate diagnostic tests and execute predefined sequences for consistent and repeatable results across multiple ECUs.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="feature-icon">
+              <i class="fas fa-folder-open"></i>
+            </div>
+            <h5 class="feature-title">Workspace Management</h5>
+            <p class="feature-description">
+              Organize and manage diagnostic projects with a customizable workspace, enabling efficient task tracking and data management.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="feature-icon">
+              <i class="fas fa-file-alt"></i>
+            </div>
+            <h5 class="feature-title">Multi-Format Support</h5>
+            <p class="feature-description">
+              Supports various file formats (e.g., HEX, S19, BIN) for seamless integration with different ECU firmware and configuration files.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Technologies Used -->
+      <div class="row mt-5">
+        <div class="col-12">
+          <h2 class="section-title" style="margin-top: 2rem;">Technologies & Standards</h2>
+          <div class="tech-grid">
+            <div class="tech-item">
+              <div class="tech-icon" style="background: linear-gradient(135deg, #00d4ff 0%, #0066cc 100%);">
+                <i class="fab fa-java"></i>
+              </div>
+              <h6>Java/JavaFX</h6>
+            </div>
+            <div class="tech-item">
+              <div class="tech-icon" style="background: linear-gradient(135deg, #00d4ff 0%, #0066cc 100%);">
+                <i class="fas fa-network-wired"></i>
+              </div>
+              <h6>ISO 14229-1/2</h6>
+            </div>
+            <div class="tech-item">
+              <div class="tech-icon" style="background: linear-gradient(135deg, #00d4ff 0%, #0066cc 100%);">
+                <i class="fas fa-exchange-alt"></i>
+              </div>
+              <h6>ISO 15765-2</h6>
+            </div>
+            <div class="tech-item">
+              <div class="tech-icon" style="background: linear-gradient(135deg, #00d4ff 0%, #0066cc 100%);">
+                <i class="fas fa-microchip"></i>
+              </div>
+              <h6>UDS Protocol</h6>
+            </div>
+            <div class="tech-item">
+              <div class="tech-icon" style="background: linear-gradient(135deg, #00d4ff 0%, #0066cc 100%);">
+                <i class="fas fa-plug"></i>
+              </div>
+              <h6>CAN Bus</h6>
+            </div>
+            <div class="tech-item">
+              <div class="tech-icon" style="background: linear-gradient(135deg, #00d4ff 0%, #0066cc 100%);">
+                <i class="fas fa-robot"></i>
+              </div>
+              <h6>AI Engine</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits section -->
+  <section id="benefits" class="animate-on-scroll">
+    <div class="container">
+      <h2 class="section-title">Why Choose XDT?</h2>
+      <div class="benefits-grid">
+        <div class="benefit-item">
+          <div class="benefit-icon">
+            <i class="fas fa-coins"></i>
+          </div>
+          <h5 class="feature-title">Cost Effective</h5>
+          <p class="feature-description">
+            Reduce diagnostic costs by up to 60% compared to traditional proprietary tools while maintaining professional-grade functionality.
+          </p>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <h5 class="feature-title">Vendor Independent</h5>
+          <p class="feature-description">
+            Work with ECUs from multiple manufacturers without needing separate tools for each brand or model.
+          </p>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <h5 class="feature-title">Time Saving</h5>
+          <p class="feature-description">
+            Streamlined workflows and automated processes reduce diagnostic time by 40% on average.
+          </p>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <h5 class="feature-title">Easy Learning</h5>
+          <p class="feature-description">
+            Intuitive interface with built-in tutorials and AI guidance makes it accessible for technicians of all skill levels.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process section -->
+  <section id="process" class="animate-on-scroll">
+    <div class="container">
+      <h2 class="section-title">How It Works</h2>
+      <div class="row g-4">
+        <div class="col-md-3">
+          <div class="process-step">
+            <div class="process-number">1</div>
+            <h5 class="feature-title">Connect</h5>
+            <p class="feature-description">
+              Connect your diagnostic interface to the vehicle's OBD port and launch XDT.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="process-step">
+            <div class="process-number">2</div>
+            <h5 class="feature-title">Configure</h5>
+            <p class="feature-description">
+              Auto-detect ECU parameters or manually configure based on vehicle specifications.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="process-step">
+            <div class="process-number">3</div>
+            <h5 class="feature-title">Diagnose</h5>
+            <p class="feature-description">
+              Run comprehensive diagnostics with AI-powered analysis and recommendations.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="process-step">
+            <div class="process-number">4</div>
+            <h5 class="feature-title">Execute</h5>
+            <p class="feature-description">
+              Perform flashing, parameter updates, or maintenance operations with confidence.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team section -->
+  <section id="team" class="animate-on-scroll">
+    <div class="container">
+      <h2 class="section-title">Meet the Team</h2>
+      <div class="row g-3">
+        <div class="col-sm-6 col-md-4">
+          <div class="team-card">
+            <div class="team-name">Janna Wael Ali Ali</div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+          <div class="team-card">
+            <div class="team-name">Karim Ayman Refaat Gomaa</div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+          <div class="team-card">
+            <div class="team-name">Mohammed Ahmed Shawky</div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+          <div class="team-card">
+            <div class="team-name">Mohamed Gamal Mohamed</div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+          <div class="team-card">
+            <div class="team-name">Sohaia Mohammed Nasr</div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+          <div class="team-card">
+            <div class="team-name">Reem Mohy Eldin Abdelrahman</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mentor-section">
+        <h4 class="footer-title">Mentored by</h4>
+        <p class="lead">Eng. Islam Gamal</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="contact">
+    <div class="container text-center">
+      <h4 class="footer-title">Interested in Demo or Collaboration?</h4>
+      <p class="mb-3">
+        Reach us at 
+        <a href="mailto:xdt.contact.team@gmail.com" class="footer-email">
+          <i class="fas fa-envelope me-2"></i>xdt.contact.team@gmail.com
+        </a>
+      </p>
+      <p class="mt-4 opacity-75">© 2025 XDT Team — One Tool, All ECUs</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Navbar scroll effect
+    window.addEventListener('scroll', function() {
+      const navbar = document.querySelector('.navbar');
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // Scroll animations
+    const animateOnScroll = () => {
+      const elements = document.querySelectorAll('.animate-on-scroll');
+      elements.forEach(element => {
+        const elementTop = element.getBoundingClientRect().top;
+        const elementVisible = 150;
+        
+        if (elementTop < window.innerHeight - elementVisible) {
+          element.classList.add('animated');
+        }
+      });
+    };
+
+    window.addEventListener('scroll', animateOnScroll);
+    animateOnScroll(); // Initial check
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Add more floating particles dynamically
+    const createParticle = () => {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.top = Math.random() * 100 + '%';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 6 + 's';
+      document.body.appendChild(particle);
+      
+      setTimeout(() => {
+        particle.remove();
+      }, 6000);
+    };
+
+    // Create particles periodically
+    setInterval(createParticle, 2000);
+  </script>
+</body>
+</html>
